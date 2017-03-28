@@ -59,15 +59,17 @@ class screengrab:
         return Image.open(strio)
 
 def run_check():
+    import numpy as np
+    import time
     S = screengrab() # initialize screengrab instance
     s0 = S.screen() # take a screenshot
     while True: # continuously...
+        time.sleep(5)
         s1 = S.screen() # take another screenshot 
-        diff = ImageChops.difference(s1, s0) # compare them
-        bbox = diff.getbbox()
-        if bbox is not None: # if they're different,
+        diff = np.abs(np.asarray(s0) - np.asarray(s1)).sum()
+        if diff > 50.0: # if they're different,
             s0 = s1
-            s0.save('imgs/turn.png') # save the new one
+            s0.save('imgs/turn.png', quality=40) # save the new one
 
 if __name__ == '__main__':
     run_check()
